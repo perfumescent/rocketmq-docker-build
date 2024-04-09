@@ -58,7 +58,7 @@ docker volume create rocketmq_data
 ```
 
 ### 部署镜像
-
+#### 方式一： 直接使用 docker run 启动容器
 ```shell
 # Linux 或 Mac
 docker run -itd \
@@ -90,7 +90,39 @@ docker run -itd \
  -v /var/run/docker.sock:/var/run/docker.sock `
  xuchengen/rocketmq:latest
 ```
+#### 方式二： 使用 docker-compose
 
+首先创建docker-compose.yml文件
+```yaml
+version: '3'
+services:
+  rocketmq:
+    image: xuchengen/rocketmq
+    container_name: rocketmq
+    hostname: rocketmq
+    restart: always
+    ports:
+      - "8080:8080"
+      - "9876:9876"
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    volumes:
+      - rocketmq_data:/home/app/data
+      - /etc/localtime:/etc/localtime
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
+
+volumes:
+  rocketmq_data:
+    name: rocketmq_data
+
+```
+再在docker-compose.yml同级目录下执行
+```shell
+docker-compose up -d
+```
 ### 控制台
 
 ```text
